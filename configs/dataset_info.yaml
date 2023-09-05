@@ -53,5 +53,5 @@ numerical_cols:
 text_cols:
   - breed
   - region
-  - text
+  - record
 label_col: labels

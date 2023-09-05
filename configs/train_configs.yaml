@@ -4,15 +4,19 @@
 --- #TESTING
 config: testing
 fast_dev_run: true
+ds_name: james-burton/vet_month_1_all_text
+version: all_text
 
 ---
 config: text_col_only
 fast_dev_run: false
 batch_size: 32
 ds_name: james-burton/vet_month_1_ordinal
+version: text_col_only
 
 ---
 config: all_text
 fast_dev_run: false
 batch_size: 32
 ds_name: james-burton/vet_month_1_all_text
+version: all_text
