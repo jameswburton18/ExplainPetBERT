@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--config",
     type=str,
-    default="text_col_only",
+    default="testing",
     help="Name of config from the the multi_config.yaml file",
 )
 config_type = parser.parse_args().config
@@ -44,11 +44,14 @@ def main():
 
     # Dataset
     di = Config("configs/dataset_info.yaml")
-    dataset = load_dataset(args["ds_name"])
+    dataset = load_dataset(
+        args["ds_name"],
+        download_mode="force_redownload",
+    )
     dataset = prepare_text(
         dataset=dataset,
         di=di,
-        version=config_type,
+        version=args["version"],
     )
 
     # Load model and tokenizer
@@ -95,6 +98,8 @@ def main():
         print(f"Results will be saved @: {output_dir}")
 
     dataset = dataset.map(encode)  # , load_from_cache_file=True)
+    dataset = dataset.remove_columns(["labels"])
+
     # Make output directory
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -115,6 +120,7 @@ def main():
         # gradient_accumulation_steps=args["grad_accumulation_steps"],
         # warmup_ratio=args["warmup_ratio"],
         # lr_scheduler_type=args["lr_scheduler"],
+        label_names=["label"],
         dataloader_num_workers=args["num_workers"],
         do_train=args["do_train"],
         do_predict=args["do_predict"],

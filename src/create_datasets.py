@@ -17,6 +17,8 @@ for month in [
     for long_col, col in zip(di.numerical_cols_long, di.numerical_cols):
         df_train = df_train.rename(columns={long_col: col})
         df_test = df_test.rename(columns={long_col: col})
+    df_train = df_train.rename(columns={"text": "record"})
+    df_test = df_test.rename(columns={"text": "record"})
     # Filter on age (young: 0-2, middle: 2-10, senior: 10+)
     df_train = df_train[(df_train["age_at_consult"] > 10)]
     df_test = df_test[(df_test["age_at_consult"] > 10)]
@@ -52,11 +54,12 @@ for month in [
     df_test_sample = df_test_sample[all_cols]
 
     train_ds = Dataset.from_pandas(df_train_sample, preserve_index=False)
-    train_ds = train_ds.class_encode_column(di.label_col)
+    # train_ds = train_ds.class_encode_column(di.label_col)
     test_ds = Dataset.from_pandas(df_test_sample, preserve_index=False)
-    test_ds = test_ds.class_encode_column(di.label_col)
+    # test_ds = test_ds.class_encode_column(di.label_col)
     train_ds = train_ds.train_test_split(
-        test_size=0.15, seed=42, stratify_by_column=di.label_col
+        test_size=0.15,
+        seed=42,  # stratify_by_column=di.label_col
     )
 
     ds = DatasetDict(
@@ -66,21 +69,19 @@ for month in [
     # Now we have made the split but still need to deal with missing values, and that depends on the column type
 
     # All as text
+    ft_cols = di.numerical_cols + di.categorical_cols + di.text_cols
     train_all_text = ds["train"].to_pandas()
+    train_all_text[ft_cols] = train_all_text[ft_cols].astype("str")
     val_all_text = ds["validation"].to_pandas()
+    val_all_text[ft_cols] = val_all_text[ft_cols].astype("str")
     test_all_text = ds["test"].to_pandas()
+    test_all_text[ft_cols] = test_all_text[ft_cols].astype("str")
 
     ds_all_text = DatasetDict(
         {
-            "train": Dataset.from_pandas(
-                train_all_text.astype("str"), preserve_index=False
-            ),
-            "validation": Dataset.from_pandas(
-                val_all_text.astype("str"), preserve_index=False
-            ),
-            "test": Dataset.from_pandas(
-                test_all_text.astype("str"), preserve_index=False
-            ),
+            "train": Dataset.from_pandas(train_all_text, preserve_index=False),
+            "validation": Dataset.from_pandas(val_all_text, preserve_index=False),
+            "test": Dataset.from_pandas(test_all_text, preserve_index=False),
         }
     )
 

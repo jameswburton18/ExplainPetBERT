@@ -18,7 +18,7 @@ def prepare_text(dataset, di, version):
     """This is all for preparing the text part of the dataset
     Could be made more robust by referring to dataset_info.py instead"""
 
-    if version == "all_as_text":
+    if version == "all_text":
         cols = di.categorical_cols + di.numerical_cols + di.text_cols
         dataset = dataset.map(row_to_string, fn_kwargs={"cols": cols})
         return dataset
