@@ -1,5 +1,7 @@
 accelerate
 datasets
+explain-pet-bert
+ipykernel
 scikit-learn
 transformers
 wandb
