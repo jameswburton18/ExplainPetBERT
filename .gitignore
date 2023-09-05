@@ -6,3 +6,4 @@ models/
 explain_pet_bert.egg-info/
 data/
 *__pycache__/
+logs/
