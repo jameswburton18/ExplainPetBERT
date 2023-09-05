@@ -1,0 +1,6 @@
+accelerate
+datasets
+scikit-learn
+transformers
+wandb
+xgboost
