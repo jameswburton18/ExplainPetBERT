@@ -26,6 +26,11 @@ def prepare_text(dataset, di, version):
         cols = di.text_cols
         dataset = dataset.map(row_to_string, fn_kwargs={"cols": cols})
         return dataset
+    elif version == "record_only":
+        # dataset rename column
+        dataset = dataset.rename_column(di.text_cols[-1], "text")
+        return dataset
+
     # elif version == "all_as_text_base_reorder":
     #     cols = di.base_reorder_cols[model_code]
     #     cols = cols[::-1] if reverse else cols

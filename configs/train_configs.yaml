@@ -1,22 +1,68 @@
-# Key
-#
+# Pattern:
+# 0s: distilbert
+# 10s: bert-base-uncased
+# 20s: distilroberta-base
+# 30s: microsoft/deberta-v3-small
+# 40s: SAVSNET/PetBERT
+
+# #0: all_as_text
+
+# #8: record_only
+# #9: text_col_only
 
 --- #TESTING
 config: testing
 fast_dev_run: true
+batch_size: 32
 ds_name: james-burton/vet_month_1_all_text
-version: all_text
+version: record_only
+model_base: SAVSNET/PetBERT
+tokenizer_base: dmis-lab/biobert-v1.1
 
 ---
-config: text_col_only
+config: vet_19
 fast_dev_run: false
 batch_size: 32
 ds_name: james-burton/vet_month_1_ordinal
 version: text_col_only
 
 ---
-config: all_text
+config: vet_10
 fast_dev_run: false
 batch_size: 32
 ds_name: james-burton/vet_month_1_all_text
 version: all_text
+
+---
+config: vet_18
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: record_only
+---
+config: vet_40
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: all_text
+model_base: SAVSNET/PetBERT
+tokenizer_base: dmis-lab/biobert-v1.1
+
+---
+config: vet_49
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: text_col_only
+model_base: SAVSNET/PetBERT
+tokenizer_base: dmis-lab/biobert-v1.1
+
+---
+config: vet_48
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: record_only
+model_base: SAVSNET/PetBERT
+tokenizer_base: dmis-lab/biobert-v1.1
+

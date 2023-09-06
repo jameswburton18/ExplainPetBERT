@@ -9,9 +9,12 @@
 #     done
 # done
 
-for cfg in all_text #airbnb_${idx} salary_${idx} channel_${idx} fake_${idx} kick_${idx} jigsaw_${idx} wine_${idx}  imdb_genre_${idx}  
+for idx in 48 49
 do
-    sbatch --job-name=$cfg scripts/train_office_pc.sh $cfg
-    # sbatch --job-name=$cfg scripts/train.sh $cfg
-    sleep 4 # so that wandb runs don't get assigned the same number
+    for cfg in vet_${idx}
+    do
+        sbatch --job-name=$cfg scripts/train_office_pc.sh $cfg
+        # sbatch --job-name=$cfg scripts/train.sh $cfg
+        sleep 4 # so that wandb runs don't get assigned the same number
+    done
 done
