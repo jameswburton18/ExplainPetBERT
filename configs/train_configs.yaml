@@ -66,3 +66,60 @@ version: record_only
 model_base: SAVSNET/PetBERT
 tokenizer_base: dmis-lab/biobert-v1.1
 
+---
+config: vet_19a
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_ordinal
+version: text_col_only
+warmup_steps: 500
+weight_decay: 0.01
+
+---
+config: vet_10a
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: all_text
+warmup_steps: 500
+weight_decay: 0.01
+
+---
+config: vet_18a
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: record_only
+warmup_steps: 500
+weight_decay: 0.01
+---
+config: vet_40a
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: all_text
+model_base: SAVSNET/PetBERT
+tokenizer_base: dmis-lab/biobert-v1.1
+warmup_steps: 500
+weight_decay: 0.01
+---
+config: vet_48a
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: record_only
+model_base: SAVSNET/PetBERT
+tokenizer_base: dmis-lab/biobert-v1.1
+warmup_steps: 500
+weight_decay: 0.01
+
+---
+config: vet_49a
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: text_col_only
+model_base: SAVSNET/PetBERT
+tokenizer_base: dmis-lab/biobert-v1.1
+warmup_steps: 500
+weight_decay: 0.01
