@@ -11,3 +11,11 @@ I think the plan should just be to repeat the same analysis that I did with the 
 pip install -e .
 pip install -r requirements.txt
 ```
+
+## Models
+* [x] vet_40 F1 0.67757 fresh-plasma-14
+* [x] vet_48 F1 0.64322 neat-cherry-33
+* [x] vet_49 F1 0.67757 valiant-flower-30
+* [x] vet_10 F1 0.6837 good-star-25
+* [x] vet_18 F1 0.71102 fresh-capybara-27
+* [x] vet_19 F1 0.72148 hardy-terrain-24
