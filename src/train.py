@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--config",
     type=str,
-    default="testing ",
+    default="testing",
     help="Name of config from the the multi_config.yaml file",
 )
 config_type = parser.parse_args().config
