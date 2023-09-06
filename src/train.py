@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--config",
     type=str,
-    default="testing",
+    default="testing ",
     help="Name of config from the the multi_config.yaml file",
 )
 config_type = parser.parse_args().config
@@ -59,7 +59,9 @@ def main():
         args["model_base"],
         num_labels=2,
     )
-    tokenizer = AutoTokenizer.from_pretrained(args["model_base"])
+    tokenizer = AutoTokenizer.from_pretrained(
+        args.get("tokenizer_base", args["model_base"])
+    )
 
     # Tokenize the dataset
     def encode(examples):
@@ -120,7 +122,6 @@ def main():
         # gradient_accumulation_steps=args["grad_accumulation_steps"],
         # warmup_ratio=args["warmup_ratio"],
         # lr_scheduler_type=args["lr_scheduler"],
-        label_names=["label"],
         dataloader_num_workers=args["num_workers"],
         do_train=args["do_train"],
         do_predict=args["do_predict"],
@@ -159,7 +160,7 @@ def main():
         # Test the model
         results = trainer.evaluate(dataset["test"], metric_key_prefix="test")
         preds = trainer.predict(dataset["test"]).predictions
-        labels = [l[0] for l in dataset["test"]["label"]]
+        labels = [lab[0] for lab in dataset["test"]["label"]]
         results["test/accuracy"] = np.mean(np.argmax(preds, axis=1) == labels)
         results["test/precision"] = precision_score(
             labels,
@@ -174,6 +175,12 @@ def main():
             zero_division=0,
         )
         results["test/roc_auc"] = roc_auc_score(labels, preds[:, 1])
+        results["test/f1"] = (
+            2
+            * results["test/precision"]
+            * results["test/recall"]
+            / (results["test/precision"] + results["test/recall"])
+        )
 
         # Save the predictions
         with open(os.path.join(output_dir, "test_results.txt"), "w") as f:
