@@ -54,19 +54,19 @@ for month in [
     df_test_sample = df_test_sample[all_cols]
 
     train_ds = Dataset.from_pandas(df_train_sample, preserve_index=False)
-    # train_ds = train_ds.class_encode_column(di.label_col)
+    train_ds = train_ds.class_encode_column(di.label_col)
     test_ds = Dataset.from_pandas(df_test_sample, preserve_index=False)
-    # test_ds = test_ds.class_encode_column(di.label_col)
+    test_ds = test_ds.class_encode_column(di.label_col)
     train_ds = train_ds.train_test_split(
-        test_size=0.15,
-        seed=42,  # stratify_by_column=di.label_col
+        test_size=0.15, seed=42, stratify_by_column=di.label_col
     )
 
     ds = DatasetDict(
         {"train": train_ds["train"], "validation": train_ds["test"], "test": test_ds}
     )
 
-    # Now we have made the split but still need to deal with missing values, and that depends on the column type
+    # Now we have made the split but still need to deal with missing values, and that
+    # depends on the column type
 
     # All as text
     ft_cols = di.numerical_cols + di.categorical_cols + di.text_cols
