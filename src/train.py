@@ -14,7 +14,7 @@ from transformers.trainer_callback import EarlyStoppingCallback
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, roc_auc_score
 from datasets import Dataset, DatasetDict
-from src.helper_functions import Config, prepare_text
+from src.helper_functions import Config, prepare_text, compute_metrics
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -121,6 +121,8 @@ def main():
         # weight_decay=args["weight_decay"],
         # gradient_accumulation_steps=args["grad_accumulation_steps"],
         # warmup_ratio=args["warmup_ratio"],
+        warmup_steps=args.get("warmup_steps", 0),
+        weight_decay=args.get("weight_decay", 0),
         # lr_scheduler_type=args["lr_scheduler"],
         dataloader_num_workers=args["num_workers"],
         do_train=args["do_train"],
@@ -133,12 +135,14 @@ def main():
         load_best_model_at_end=True,
         seed=args["seed"],
         torch_compile=args["pytorch2.0"],  # Needs to be true if PyTorch 2.0
+        metric_for_best_model="f1",
     )
 
     trainer = Trainer(
         model=model,
         args=training_args,
         tokenizer=tokenizer,
+        compute_metrics=compute_metrics,
         train_dataset=dataset["train"],
         eval_dataset=dataset["validation"],
         callbacks=[EarlyStoppingCallback(args["early_stopping_patience"])]
