@@ -29,13 +29,13 @@ numerical_cols_long:
 numerical_cols:
   - age_at_consult
   - Ear_or_Mastoid
-  - Mental,_Behavioral_or_Neuro
+  - Mental_Behavioral_or_Neuro
   - Blood_or_Blood-forming
   - Circulatory
   - Dental
   - Developmental
   - Digestive
-  - Endocrine,_Nutritional_or_Metabolic
+  - Endocrine_Nutritional_or_Metabolic
   - Immune
   - Infectious_or_Parasitic
   - Skin
@@ -44,9 +44,9 @@ numerical_cols:
   - Nervous
   - Visual
   - Perinatal
-  - Pregnancy,_Childbirth_or_Puerperium
+  - Pregnancy_Childbirth_or_Puerperium
   - Respiratory
-  - Injury,_Poisoning_or_External_Causes
+  - Injury_Poisoning_or_External_Causes
   - Genitourinary
 
 text_cols:
