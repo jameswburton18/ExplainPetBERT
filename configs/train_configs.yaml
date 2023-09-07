@@ -4,6 +4,7 @@
 # 20s: distilroberta-base
 # 30s: microsoft/deberta-v3-small
 # 40s: SAVSNET/PetBERT
+# 50s: SAVSNET/PetBERT_pretrained
 
 # #0: all_as_text
 
@@ -121,5 +122,34 @@ ds_name: james-burton/vet_month_1_all_text
 version: text_col_only
 model_base: SAVSNET/PetBERT
 tokenizer_base: dmis-lab/biobert-v1.1
+warmup_steps: 500
+weight_decay: 0.01
+
+---
+config: vet_50a
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: all_text
+model_base: SAVSNET/PetBERT_pretrained
+warmup_steps: 500
+weight_decay: 0.01
+---
+config: vet_58a
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: record_only
+model_base: SAVSNET/PetBERT_pretrained
+warmup_steps: 500
+weight_decay: 0.01
+
+---
+config: vet_59a
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1_all_text
+version: text_col_only
+model_base: SAVSNET/PetBERT_pretrained
 warmup_steps: 500
 weight_decay: 0.01

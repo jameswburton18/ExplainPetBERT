@@ -15,7 +15,16 @@ pip install -r requirements.txt
 ## Models
 * [x] vet_40 F1 0.67757 fresh-plasma-14
 * [x] vet_48 F1 0.64322 neat-cherry-33
-* [x] vet_49 F1 0.67757 valiant-flower-30
+* [x] vet_49 F1 0.67757 valiant-flower-30 didn't work, all 1s
 * [x] vet_10 F1 0.6837 good-star-25
 * [x] vet_18 F1 0.71102 fresh-capybara-27
 * [x] vet_19 F1 0.72148 hardy-terrain-24
+* [x] vet_40a F1 0.67757 wobbly-lion-41 didn't work, all 1s
+* [x] vet_48a F1 0.70727 hardy-fog-42
+* [x] vet_49a F1 0.67923 clean-snowball-43 didn't work, almost all 1s
+* [x] vet_10a F1 0.70294 fragrant-dream-39
+* [x] vet_18a F1 0.71778 autumn-resonance-38
+* [x] vet_19a F1 0.70338 lunar-lake-40
+* [x] vet_50a F1 0.74058 fragrant-universe-45
+* [x] vet_58a F1 0.7304 sandy-bird-47
+* [x] vet_59a F1 0.72609 lucky-energy-45
