@@ -1,0 +1,31 @@
+---
+config: vet_50a_all_text
+my_text_model: james-burton/vet_50a
+ds_name: james-burton/vet_month_1_all_text
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: all_text
+ord_ds_name: james-burton/vet_month_1_ordinal
+text_model_code: pbert_pt
+
+---
+config: vet_59a_stack
+my_text_model: james-burton/vet_59a
+ds_name: james-burton/vet_month_1_ordinal
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: stack
+ord_ds_name: james-burton/vet_month_1_ordinal
+
+---
+config: vet_50a_baseline
+my_text_model: james-burton/vet_50a
+ds_name: james-burton/vet_month_1_all_text
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: all_text
+ord_ds_name: james-burton/vet_month_1_ordinal
+---
+config: vet_59a_ensemble_50
+my_text_model: james-burton/vet_59a
+ds_name: james-burton/vet_month_1_ordinal
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: ensemble_50
+ord_ds_name: james-burton/vet_month_1_ordinal

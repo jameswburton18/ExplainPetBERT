@@ -1,0 +1,58 @@
+--- # Vet dataset
+categorical_cols:
+  - gender
+  - neutered
+  - species
+  - insured
+numerical_cols_long:
+  - age_at_consult
+  - Diseases of the ear or mastoid process
+  - Mental, behavioural or neurodevelopmental disorders
+  - Diseases of the blood or blood-forming organs
+  - Diseases of the circulatory system
+  - Dental
+  - Developmental anomalies
+  - Diseases of the digestive system
+  - Endocrine, nutritional or metabolic diseases
+  - Diseases of the Immune system
+  - Certain infectious or parasitic diseases
+  - Diseases of the skin
+  - Diseases of the musculoskeletal system or connective tissue
+  - Neoplasms
+  - Diseases of the nervous system
+  - Diseases of the visual system
+  - Certain conditions originating in the perinatal period
+  - Pregnancy, childbirth or the puerperium
+  - Diseases of the respiratory system
+  - Injury, poisoning or certain other consequences of external causes
+  - Diseases of the genitourinary system
+numerical_cols:
+  - age_at_consult
+  - Ear_or_Mastoid
+  - Mental,_Behavioral_or_Neuro
+  - Blood_or_Blood-forming
+  - Circulatory
+  - Dental
+  - Developmental
+  - Digestive
+  - Endocrine,_Nutritional_or_Metabolic
+  - Immune
+  - Infectious_or_Parasitic
+  - Skin
+  - Musculoskeletal_or_Connective_Tissue
+  - Neoplasms
+  - Nervous
+  - Visual
+  - Perinatal
+  - Pregnancy,_Childbirth_or_Puerperium
+  - Respiratory
+  - Injury,_Poisoning_or_External_Causes
+  - Genitourinary
+
+text_cols:
+  - practice_id
+  - premise_id
+  - breed
+  - region
+  - record
+label_col: labels
