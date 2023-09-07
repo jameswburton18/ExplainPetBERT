@@ -29,6 +29,7 @@ ds_name: james-burton/vet_month_1_ordinal
 text_model_base: SAVSNET/PetBERT_pretrained
 model_type: ensemble_50
 ord_ds_name: james-burton/vet_month_1_ordinal
+
 ---
 config: vet_59b_stack
 my_text_model: james-burton/vet_59a
@@ -36,7 +37,13 @@ ds_name: james-burton/vet_month_1b_ordinal
 text_model_base: SAVSNET/PetBERT_pretrained
 model_type: stack
 ord_ds_name: james-burton/vet_month_1b_ordinal
-
+---
+config: vet_50b_all_text
+my_text_model: james-burton/vet_50b
+ds_name: james-burton/vet_month_1b_all_text
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: all_text
+ord_ds_name: james-burton/vet_month_1b_ordinal
 ---
 config: vet_50b_baseline
 my_text_model: james-burton/vet_50b
@@ -50,4 +57,18 @@ my_text_model: james-burton/vet_59b
 ds_name: james-burton/vet_month_1b_ordinal
 text_model_base: SAVSNET/PetBERT_pretrained
 model_type: ensemble_50
+ord_ds_name: james-burton/vet_month_1b_ordinal
+---
+config: vet_59b_ensemble_25
+my_text_model: james-burton/vet_59b
+ds_name: james-burton/vet_month_1b_ordinal
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: ensemble_25
+ord_ds_name: james-burton/vet_month_1b_ordinal
+---
+config: vet_59b_ensemble_75
+my_text_model: james-burton/vet_59b
+ds_name: james-burton/vet_month_1b_ordinal
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: ensemble_75
 ord_ds_name: james-burton/vet_month_1b_ordinal
