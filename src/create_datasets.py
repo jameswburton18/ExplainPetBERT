@@ -1,7 +1,6 @@
 from sklearn.preprocessing import OrdinalEncoder
-import yaml
 import pandas as pd
-from src.helper_functions import Config
+from src.utils import Config
 from datasets import Dataset, DatasetDict
 
 # ## Dataset creation here
