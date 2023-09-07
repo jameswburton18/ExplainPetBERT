@@ -8,12 +8,31 @@ from sklearn.metrics import (
 )
 
 
-class Config:
-    def __init__(self, yaml_file_path):
-        with open(yaml_file_path, "r") as yaml_file:
-            yaml_data = yaml.safe_load(yaml_file)
-            for key, value in yaml_data.items():
-                setattr(self, key, value)
+def format_text_pred(pred):
+    scores = [p["score"] for p in pred]
+    order = [int(p["label"][6:]) for p in pred]
+    return np.array(
+        [scores[i] for i in sorted(range(len(scores)), key=lambda x: order[x])]
+    )
+
+
+class ConfigLoader:
+    def __init__(self, config_name, configs_path, default_path):
+        with open(default_path) as f:
+            args = yaml.safe_load(f)
+
+        # Update default args with chosen config
+        if config_name != "default":
+            with open(configs_path) as f:
+                yaml_configs = yaml.safe_load_all(f)
+                yaml_args = next(
+                    conf for conf in yaml_configs if conf["config"] == config_name
+                )
+            args.update(yaml_args)
+            print(f"Updating with:\n{yaml_args}\n")
+        print(f"\n{args}\n")
+        for key, value in args.items():
+            setattr(self, key, value)
 
 
 def row_to_string(row, cols):
