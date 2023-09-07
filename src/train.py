@@ -14,7 +14,7 @@ from transformers.trainer_callback import EarlyStoppingCallback
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, roc_auc_score
 from datasets import Dataset, DatasetDict
-from src.utils import Config, prepare_text, compute_metrics, ConfigLoader
+from src.utils import prepare_text, compute_metrics, ConfigLoader
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -45,10 +45,10 @@ def main():
         config_type, "configs/train_configs.yaml", "configs/train_default.yaml"
     ).__dict__
     # Dataset
-    di = Config("configs/dataset_info2.yaml")  # changed to 2
+    di = ConfigLoader("default", "", "configs/dataset_info2.yaml")  # changed to 2
     dataset = load_dataset(
         args["ds_name"],
-        # download_mode="force_redownload",
+        download_mode="force_redownload",
     )
     dataset = prepare_text(
         dataset=dataset,

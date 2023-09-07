@@ -1,6 +1,6 @@
 from sklearn.preprocessing import OrdinalEncoder
 import pandas as pd
-from src.utils import Config
+from src.utils import ConfigLoader
 from datasets import Dataset, DatasetDict
 
 # ## Dataset creation here
@@ -8,7 +8,7 @@ for month in [
     1,
 ]:
     i = 28 * month
-    di = Config("configs/dataset_info.yaml")
+    di = ConfigLoader("default", "", "configs/dataset_info2.yaml")  # changed to 2
     df_train = pd.read_csv("data/raw/train.csv")
     df_test = pd.read_csv("data/raw/test.csv")
 
@@ -21,6 +21,10 @@ for month in [
     # Filter on age (young: 0-2, middle: 2-10, senior: 10+)
     df_train = df_train[(df_train["age_at_consult"] > 10)]
     df_test = df_test[(df_test["age_at_consult"] > 10)]
+    # Set numerical cols as int (apart from age_at_consult)
+    int_cols = di.numerical_cols[1:] + ["practice_id", "premise_id"]
+    df_train[int_cols] = df_train[int_cols].astype(int)
+    df_test[int_cols] = df_test[int_cols].astype(int)
 
     df_train["Difference"] = df_train["Difference"].astype(str)
     df_train["Difference"] = df_train["Difference"].str.split(" ").str[0]
@@ -84,7 +88,7 @@ for month in [
         }
     )
 
-    ds_all_text.push_to_hub(f"vet_month_{month}_all_text")
+    ds_all_text.push_to_hub(f"vet_month_{month}b_all_text")
 
     train = ds["train"].to_pandas()
     val = ds["validation"].to_pandas()
@@ -119,4 +123,4 @@ for month in [
         }
     )
 
-    ds2.push_to_hub(f"vet_month_{month}_ordinal")
+    ds2.push_to_hub(f"vet_month_{month}b_ordinal")
