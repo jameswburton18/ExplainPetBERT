@@ -11,17 +11,19 @@ from src.utils import token_segments, text_ft_index_ends
 
 # from src.models import Model
 import xgboost as xgb
+import lightgbm as lgb
 from src.models import WeightedEnsemble, StackModel, AllAsTextModel
 from src.joint_masker import JointMasker
 from src.utils import ConfigLoader
 import argparse
 import scipy as sp
 
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     "--config",
     type=str,
-    default="testing",
+    default="vet_59b_ensemble_50",
     help="Name of config from the the multi_config.yaml file",
 )
 
@@ -32,7 +34,7 @@ def run_shap(
     test_set_size=100,
 ):
     di = ConfigLoader(
-        config_type, "configs/dataset_configs.yaml", "configs/dataset_info.yaml"
+        config_type, "configs/dataset_configs.yaml", "configs/dataset_info2.yaml"
     )
     # Data
     train_df = load_dataset(
@@ -42,8 +44,7 @@ def run_shap(
     y_train = train_df[di.label_col]
 
     test_df = load_dataset(
-        di.ds_name,
-        split="test",  # download_mode="force_redownload"
+        di.ds_name, split="test", download_mode="force_redownload"
     ).to_pandas()
     test_df = test_df.sample(test_set_size, random_state=55)
 
@@ -104,7 +105,7 @@ def run_shap(
         train_df[di.categorical_cols] = train_df[di.categorical_cols].astype("category")
         test_df[di.categorical_cols] = test_df[di.categorical_cols].astype("category")
 
-        tab_model = xgb.XGBClassifier(random_state=42)
+        tab_model = lgb.LGBMClassifier(random_state=42)
         tab_model.fit(train_df[di.categorical_cols + di.numerical_cols], y_train)
 
         if di.model_type in ["ensemble_25", "ensemble_50", "ensemble_75"]:
@@ -395,8 +396,8 @@ def gen_summary_shap_vals(config_type, add_parent_dir=False):
 if __name__ == "__main__":
     config_type = parser.parse_args().config
     if "baseline" in config_type:
-        run_all_text_baseline_shap(config_type)
+        run_all_text_baseline_shap(config_type, test_set_size=1000)
 
     else:
         run_shap(config_type)
-    gen_summary_shap_vals(config_type)
+    gen_summary_shap_vals(config_type, test_set_size=1000)
