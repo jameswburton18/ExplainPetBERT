@@ -33,6 +33,6 @@ mem=`nvidia-smi --query-gpu=memory.total --format=csv | tail -n 1 | awk '{print 
 echo "$mem Mb available"
 
 date '+%c'
-echo "--ds_type $1 --text_model_code $2"
+echo "--config $1"
 # python combine_LIME.py --dataset fraud --model joint
-python src/run_shap.py --ds_type $1 --text_model_code $2
+python src/run_shap.py --config $1

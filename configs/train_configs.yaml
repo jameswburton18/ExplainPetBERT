@@ -182,3 +182,30 @@ version: text_col_only
 model_base: SAVSNET/PetBERT_pretrained
 warmup_steps: 500
 weight_decay: 0.01
+
+---
+config: vet_19b
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1b_ordinal
+version: text_col_only
+warmup_steps: 500
+weight_decay: 0.01
+
+---
+config: vet_10b
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1b_all_text
+version: all_text
+warmup_steps: 500
+weight_decay: 0.01
+
+---
+config: vet_18b
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1b_all_text
+version: record_only
+warmup_steps: 500
+weight_decay: 0.01

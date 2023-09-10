@@ -44,7 +44,8 @@ def run_shap(
     y_train = train_df[di.label_col]
 
     test_df = load_dataset(
-        di.ds_name, split="test", download_mode="force_redownload"
+        di.ds_name,
+        split="test",  # download_mode="force_redownload"
     ).to_pandas()
     test_df = test_df.sample(test_set_size, random_state=55)
 

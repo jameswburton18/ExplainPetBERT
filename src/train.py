@@ -48,7 +48,7 @@ def main():
     di = ConfigLoader("default", "", "configs/dataset_info2.yaml")  # changed to 2
     dataset = load_dataset(
         args["ds_name"],
-        download_mode="force_redownload",
+        # download_mode="force_redownload",
     )
     dataset = prepare_text(
         dataset=dataset,
