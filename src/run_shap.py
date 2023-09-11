@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--config",
     type=str,
-    default="vet_59b_ensemble_50",
+    default="vet_10b_baseline",
     help="Name of config from the the multi_config.yaml file",
 )
 
@@ -212,7 +212,7 @@ def run_all_text_baseline_shap(
     test_set_size=100,
 ):
     di = ConfigLoader(
-        config_type, "configs/dataset_configs.yaml", "configs/dataset_info.yaml"
+        config_type, "configs/dataset_configs.yaml", "configs/dataset_info2.yaml"
     )
     # Data
     test_df = load_dataset(
