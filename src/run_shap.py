@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--config",
     type=str,
-    default="vet_59b_ensemble_50",
+    default="vet_10b_baseline",
     help="Name of config from the the multi_config.yaml file",
 )
 
