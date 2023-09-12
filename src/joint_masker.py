@@ -299,6 +299,12 @@ class JointMasker(Masker):
                 all_token_ids = []
                 for col_idx, text_col in enumerate(s):
                     col_tokens, col_token_ids = self.token_segments(text_col)
+                    """
+                    We differentiate these because the first column we need to get 
+                    rid of the end of sentence token, the last column we need to get 
+                    rid of the start of sentence token and the middle columns we need
+                    to get rid of both
+                    """
                     # First col
                     if col_idx == 0:
                         col_token_ids = col_token_ids[:-1]
