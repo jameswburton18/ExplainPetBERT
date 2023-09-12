@@ -56,3 +56,6 @@ text_cols:
   - region
   - record
 label_col: labels
+label_names:
+  - alive
+  - dead
