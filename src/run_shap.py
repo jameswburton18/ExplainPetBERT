@@ -212,7 +212,7 @@ def run_all_text_baseline_shap(
     test_set_size=100,
 ):
     di = ConfigLoader(
-        config_type, "configs/dataset_configs.yaml", "configs/dataset_info.yaml"
+        config_type, "configs/dataset_configs.yaml", "configs/dataset_info2.yaml"
     )
     # Data
     test_df = load_dataset(
@@ -274,7 +274,7 @@ def load_shap_vals(config_name, add_parent_dir=False):
 
 def gen_summary_shap_vals(config_type, add_parent_dir=False):
     di = ConfigLoader(
-        config_type, "configs/dataset_configs.yaml", "configs/dataset_info.yaml"
+        config_type, "configs/dataset_configs.yaml", "configs/dataset_info2.yaml"
     )
     shap_vals = load_shap_vals(config_type, add_parent_dir=add_parent_dir)
     tokenizer = AutoTokenizer.from_pretrained(di.text_model_base, model_max_length=512)
