@@ -307,16 +307,26 @@ class JointMasker(Masker):
                     """
                     # First col
                     if col_idx == 0:
-                        col_token_ids = col_token_ids[:-1]
-                        col_tokens = col_tokens[:-1]
+                        col_token_ids = (
+                            col_token_ids[:-1] if self.keep_suffix else col_token_ids
+                        )
+                        col_tokens = col_tokens[:-1] if self.keep_suffix else col_tokens
                     # Middle cols
                     elif col_idx != len(s) - 1:
-                        col_token_ids = col_token_ids[1:-1]
-                        col_tokens = col_tokens[1:-1]
+                        col_token_ids = (
+                            col_token_ids[self.keep_prefix : -1]
+                            if self.keep_suffix
+                            else col_token_ids[self.keep_prefix :]
+                        )
+                        col_tokens = (
+                            col_tokens[self.keep_prefix : -1]
+                            if self.keep_suffix
+                            else col_tokens[self.keep_prefix :]
+                        )
                     # Last col
                     else:
-                        col_token_ids = col_token_ids[1:]
-                        col_tokens = col_tokens[1:]
+                        col_token_ids = col_token_ids[self.keep_prefix :]
+                        col_tokens = col_tokens[self.keep_prefix :]
                     all_tokens.append(np.array(col_tokens))
                     all_token_ids.append(np.array(col_token_ids))
                 self._tokenized_s = all_token_ids
