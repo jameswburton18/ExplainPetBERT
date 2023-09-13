@@ -32,7 +32,7 @@ ord_ds_name: james-burton/vet_month_1_ordinal
 
 ---
 config: vet_59b_stack
-my_text_model: james-burton/vet_59a
+my_text_model: james-burton/vet_59b
 ds_name: james-burton/vet_month_1b_ordinal
 text_model_base: SAVSNET/PetBERT_pretrained
 model_type: stack
