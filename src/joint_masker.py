@@ -643,12 +643,18 @@ def merge_score(group1, group2, special_tokens):
     return score
 
 
+# def rearrange_groups(pt_join, n_leaves, g_cs):
+
+
 def join_dendograms(pts):
     n_leaves = [int(max(pt[:, 3])) for pt in pts]
     n_empty = sum([1 for n in n_leaves if n == 1])
     n_groups = [len(pt) for pt in pts]
-    # if n_leaves is 1, then then n_groups is set to 0
-    # n_groups = [g if l > 1 else 0 for g, l in zip(n_groups, n_leaves)]
+
+    # Needed to add this because could join two together but you'd still need
+    # an extra row to join the next one on. So if there are two single words
+    # then we need to reduce n_empty by 1
+    n_empty -= n_leaves[0] == 1 and n_leaves[1] == 1
 
     pt_join = np.zeros((sum(n_groups) + len(pts) - n_empty - 1, 4))
     # For the first partition tree the leaves (ie the words/features) are unchanged,
@@ -698,6 +704,52 @@ def join_dendograms(pts):
     n_in_top_nodes = [
         i for idx, i in enumerate(n_in_top_nodes0) if not top_node_acntd_for[idx]
     ]
+
+    #########################################################################################
+    # This bit is all to take into account the case where the first group is a single token
+    # This is a fringe case which will only happen if the first group is a single token and
+    # the tokenizer does not have a start of sentence token
+
+    if pt_join[0, 1] == np.inf:
+        # We have to check that the second group is not a single word too
+        if n_leaves[1] == 1:
+            # first and second groups just form a single group
+            pt_join[0, 1] = 1
+            # pop the second group
+            pt_join = np.delete(pt_join, 1, 0)
+            # adjust group references: if there is a number > sum(n_leaves) then minus 1 from it
+            pt_join[:, :2] = np.where(
+                pt_join[:, :2] > sum(n_leaves), pt_join[:, :2] - 1, pt_join[:, :2]
+            )
+            # adjust top_nodes: if there is a number > sum(n_leaves) then minus 1 from it
+            top_nodes = [i - 1 for i in top_nodes if i > sum(n_leaves)]
+            # adjust g_cs because we use it later
+            g_cs = [i - 1 for i in g_cs[1:]]
+        else:
+            # Connect it to the top node of the next tree
+            pt_join[0, 1] = top_nodes[1]
+            pt_join[0, 2] = 1
+            pt_join[0, 3] = n_in_top_nodes[1] + 1
+            # rearrange groups such that the first row is now behind the seconrd group
+            second_grp_size = top_nodes[1] - top_nodes[0]
+            new_order = (
+                list(range(1, second_grp_size + 1))
+                + [0]
+                + list(range(1 + second_grp_size, pt_join.shape[0]))
+            )
+            pt_join = pt_join[new_order, :]
+            # adjust group references: if there is a number >= sum(n_leaves) and <= top_nodes[1]
+            # then minus 1 from it
+            pt_join[:, :2] = np.where(
+                (pt_join[:, :2] >= sum(n_leaves)) & (pt_join[:, :2] <= top_nodes[1]),
+                pt_join[:, :2] - 1,
+                pt_join[:, :2],
+            )
+            # redefine top_nodes and n_in_top_nodes, swapping the first two elements
+            top_nodes = top_nodes[1:]
+            n_in_top_nodes = n_in_top_nodes[1:]
+            n_in_top_nodes[0] += 1
+    #########################################################################################
 
     # Now we need to join the top nodes together
     joiner_rows = []
