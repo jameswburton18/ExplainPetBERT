@@ -8,7 +8,7 @@ for month in [
     1,
 ]:
     i = 28 * month
-    di = ConfigLoader("default", "", "configs/dataset_info2.yaml")  # changed to 2
+    di = ConfigLoader("default", "", "configs/dataset_default.yaml")  # changed to 2
     df_train = pd.read_csv("data/raw/train.csv")
     df_test = pd.read_csv("data/raw/test.csv")
 

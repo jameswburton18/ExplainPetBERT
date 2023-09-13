@@ -45,7 +45,7 @@ def main():
         config_type, "configs/train_configs.yaml", "configs/train_default.yaml"
     ).__dict__
     # Dataset
-    di = ConfigLoader("default", "", "configs/dataset_info2.yaml")  # changed to 2
+    di = ConfigLoader("default", "", "configs/dataset_default.yaml")  # changed to 2
     dataset = load_dataset(
         args["ds_name"],
         # download_mode="force_redownload",
