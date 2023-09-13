@@ -7,7 +7,7 @@ from datasets import load_dataset
 from transformers import pipeline, AutoTokenizer
 import os
 from tqdm import tqdm
-from src.utils import token_segments, text_ft_index_ends
+from src.utils import token_segments, text_ft_index_ends, format_text_pred
 
 # from src.models import Model
 import xgboost as xgb
@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--config",
     type=str,
-    default="vet_10b_baseline",
+    default="vet_50b_all_text",
     help="Name of config from the the multi_config.yaml file",
 )
 
@@ -34,7 +34,7 @@ def run_shap(
     test_set_size=100,
 ):
     di = ConfigLoader(
-        config_type, "configs/dataset_configs.yaml", "configs/dataset_info2.yaml"
+        config_type, "configs/dataset_configs.yaml", "configs/dataset_default.yaml"
     )
     # Data
     train_df = load_dataset(
@@ -138,18 +138,20 @@ def run_shap(
             # validation set plus the tabular features from the validation set
             text_val_preds = text_pipeline(val_text)
             text_val_preds = np.array(
-                [[lab["score"] for lab in pred] for pred in text_val_preds]
+                [format_text_pred(pred) for pred in text_val_preds]
             )
 
             # add text and tabular predictions to the val_df
             stack_val_df = val_df[di.categorical_cols + di.numerical_cols]
-            tab_val_preds = tab_model.predict_proba(stack_val_df)
-            for i in range(text_val_preds.shape[1]):
-                stack_val_df[f"text_pred_{i}"] = text_val_preds[:, i]
-            for i in range(tab_val_preds.shape[1]):
-                stack_val_df[f"tab_pred_{i}"] = tab_val_preds[:, i]
+            tab_val_preds = tab_model.predict_proba(
+                val_df[di.categorical_cols + di.numerical_cols]
+            )
+            stack_val_df[f"text_pred"] = text_val_preds[:, 1]
+            stack_val_df[f"tab_pred"] = tab_val_preds[:, 1]
 
-            stack_model = xgb.XGBClassifier(random_state=42)
+            stack_model = lgb.LGBMClassifier(
+                random_state=42, max_depth=2, learning_rate=0.001
+            )
             stack_model.fit(stack_val_df, y_val)
 
             model = StackModel(
@@ -157,6 +159,7 @@ def run_shap(
                 text_pipeline=text_pipeline,
                 stack_model=stack_model,
                 cols_to_str_fn=cols_to_str_fn,
+                all_labels=False,
             )
         else:
             raise ValueError(f"Invalid model type of {di.model_type}")
@@ -212,7 +215,7 @@ def run_all_text_baseline_shap(
     test_set_size=100,
 ):
     di = ConfigLoader(
-        config_type, "configs/dataset_configs.yaml", "configs/dataset_info2.yaml"
+        config_type, "configs/dataset_configs.yaml", "configs/dataset_default.yaml"
     )
     # Data
     test_df = load_dataset(
@@ -274,7 +277,7 @@ def load_shap_vals(config_name, add_parent_dir=False):
 
 def gen_summary_shap_vals(config_type, add_parent_dir=False):
     di = ConfigLoader(
-        config_type, "configs/dataset_configs.yaml", "configs/dataset_info2.yaml"
+        config_type, "configs/dataset_configs.yaml", "configs/dataset_default.yaml"
     )
     shap_vals = load_shap_vals(config_type, add_parent_dir=add_parent_dir)
     tokenizer = AutoTokenizer.from_pretrained(di.text_model_base, model_max_length=512)
@@ -401,4 +404,4 @@ if __name__ == "__main__":
 
     else:
         run_shap(config_type)
-    gen_summary_shap_vals(config_type, test_set_size=1000)
+    gen_summary_shap_vals(config_type)
