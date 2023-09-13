@@ -80,9 +80,9 @@ def prepare_text(dataset, di, version):
         raise ValueError(f"Unknown dataset type version ({version}) combination")
 
 
-def compute_metrics(p):
+def compute_metrics(p, argmax=True):
     pred, labels = p
-    pred = np.argmax(pred, axis=1)
+    pred = np.argmax(pred, axis=1) if argmax else pred
     accuracy = accuracy_score(y_true=labels, y_pred=pred)
     recall = recall_score(y_true=labels, y_pred=pred)
     precision = precision_score(y_true=labels, y_pred=pred)
