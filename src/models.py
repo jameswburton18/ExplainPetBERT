@@ -63,17 +63,14 @@ class WeightedEnsemble:
 
 class StackModel:
     def __init__(
-        self,
-        tab_model,
-        text_pipeline,
-        stack_model,
-        cols_to_str_fn,
+        self, tab_model, text_pipeline, stack_model, cols_to_str_fn, all_labels=True
     ):
         self.tab_model = tab_model
         self.text_pipeline = text_pipeline
         self.stack_model = stack_model
         self.cols_to_str_fn = cols_to_str_fn
         self.num_tab_cols = len(self.tab_model.feature_name_)
+        self.all_labels = all_labels
 
     def predict(self, examples):
         if len(examples.shape) == 1:
@@ -102,7 +99,12 @@ class StackModel:
             expanded_text_preds[idxs] = text_preds[i]
 
         # Stack
-        stack_examples = np.hstack([tab_examples, expanded_text_preds, tab_preds])
+        if self.all_labels:
+            stack_examples = np.hstack([tab_examples, expanded_text_preds, tab_preds])
+        else:
+            stack_examples = np.hstack(
+                [tab_examples, expanded_text_preds[:, 1:], tab_preds[:, 1:]]
+            )
         stack_preds = self.stack_model.predict_proba(stack_examples)
 
         return stack_preds
