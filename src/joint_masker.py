@@ -715,6 +715,7 @@ def join_dendograms(pts):
         if n_leaves[1] == 1:
             # first and second groups just form a single group
             pt_join[0, 1] = 1
+            pt_join[0, 3] = 2
             # pop the second group
             pt_join = np.delete(pt_join, 1, 0)
             # adjust group references: if there is a number > sum(n_leaves) then minus 1 from it
@@ -722,7 +723,7 @@ def join_dendograms(pts):
                 pt_join[:, :2] > sum(n_leaves), pt_join[:, :2] - 1, pt_join[:, :2]
             )
             # adjust top_nodes: if there is a number > sum(n_leaves) then minus 1 from it
-            top_nodes = [i - 1 for i in top_nodes if i > sum(n_leaves)]
+            top_nodes = [i - 1 for i in top_nodes]
             # adjust g_cs because we use it later
             g_cs = [i - 1 for i in g_cs[1:]]
         else:
@@ -762,7 +763,6 @@ def join_dendograms(pts):
         if len(top_nodes) > 0:
             top_nodes.insert(0, top_nodes[-1] + len(joiner_rows))
             n_in_top_nodes.insert(0, first_two)
-    sum(n_leaves)
     pt_join[g_cs[-1] :] = np.array(joiner_rows)
     pt_join[:, 2] = pt_join[:, 3]
     pt_join[:, 2] /= pt_join[:, 2].max()
