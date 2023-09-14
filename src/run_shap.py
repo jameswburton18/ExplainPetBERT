@@ -106,7 +106,7 @@ def run_shap(
         train_df[di.categorical_cols] = train_df[di.categorical_cols].astype("category")
         test_df[di.categorical_cols] = test_df[di.categorical_cols].astype("category")
 
-        tab_model = lgb.LGBMClassifier(random_state=42)
+        tab_model = lgb.LGBMClassifier(random_state=42, max_depth=3)
         tab_model.fit(train_df[di.categorical_cols + di.numerical_cols], y_train)
 
         if di.model_type in ["ensemble_25", "ensemble_50", "ensemble_75"]:
@@ -150,7 +150,7 @@ def run_shap(
             stack_val_df[f"tab_pred"] = tab_val_preds[:, 1]
 
             stack_model = lgb.LGBMClassifier(
-                random_state=42, max_depth=2, learning_rate=0.001
+                random_state=42, max_depth=2, learning_rate=0.01
             )
             stack_model.fit(stack_val_df, y_val)
 
