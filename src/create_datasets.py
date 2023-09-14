@@ -88,7 +88,7 @@ for month in [
         }
     )
 
-    ds_all_text.push_to_hub(f"vet_month_{month}b_all_text")
+    ds_all_text.push_to_hub(f"vet_month_{month}c_all_text")
 
     train = ds["train"].to_pandas()
     val = ds["validation"].to_pandas()
@@ -123,4 +123,4 @@ for month in [
         }
     )
 
-    ds2.push_to_hub(f"vet_month_{month}b_ordinal")
+    ds2.push_to_hub(f"vet_month_{month}c_ordinal")

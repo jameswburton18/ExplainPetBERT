@@ -209,3 +209,59 @@ ds_name: james-burton/vet_month_1b_all_text
 version: record_only
 warmup_steps: 500
 weight_decay: 0.01
+
+--- #for c i've removed the id cols in the dataset
+config: vet_50c
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1c_all_text
+version: all_text
+model_base: SAVSNET/PetBERT_pretrained
+warmup_steps: 500
+weight_decay: 0.01
+---
+config: vet_58c
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1c_all_text
+version: record_only
+model_base: SAVSNET/PetBERT_pretrained
+warmup_steps: 500
+weight_decay: 0.01
+
+---
+config: vet_59c
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1c_all_text
+version: text_col_only
+model_base: SAVSNET/PetBERT_pretrained
+warmup_steps: 500
+weight_decay: 0.01
+
+---
+config: vet_19c
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1c_ordinal
+version: text_col_only
+warmup_steps: 500
+weight_decay: 0.01
+
+---
+config: vet_10c
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1c_all_text
+version: all_text
+warmup_steps: 500
+weight_decay: 0.01
+
+---
+config: vet_18c
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1c_all_text
+version: record_only
+warmup_steps: 500
+weight_decay: 0.01
