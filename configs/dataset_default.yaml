@@ -50,6 +50,8 @@ numerical_cols:
   - Genitourinary
 
 text_cols:
+  - practice_id
+  - premise_id
   - breed
   - region
   - record
