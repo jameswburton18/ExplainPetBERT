@@ -188,7 +188,7 @@ text_cols:
   - record
 ---
 config: vet_10c_baseline
-my_text_model: james-burton/vet_50c
+my_text_model: james-burton/vet_10c
 ds_name: james-burton/vet_month_1c_all_text
 text_model_base: bert-base-uncased
 model_type: all_text
@@ -198,11 +198,11 @@ text_cols:
   - region
   - record
 ---
-config: vet_19c_ensemble_50
-my_text_model: james-burton/vet_59c
+config: vet_19c_ensemble_10
+my_text_model: james-burton/vet_19c
 ds_name: james-burton/vet_month_1c_ordinal
 text_model_base: bert-base-uncased
-model_type: ensemble_50
+model_type: ensemble_10
 ord_ds_name: james-burton/vet_month_1c_ordinal
 text_cols:
   - breed
@@ -210,7 +210,7 @@ text_cols:
   - record
 ---
 config: vet_19c_ensemble_25
-my_text_model: james-burton/vet_59c
+my_text_model: james-burton/vet_19c
 ds_name: james-burton/vet_month_1c_ordinal
 text_model_base: bert-base-uncased
 model_type: ensemble_25
@@ -221,10 +221,21 @@ text_cols:
   - record
 ---
 config: vet_19c_ensemble_75
-my_text_model: james-burton/vet_59c
+my_text_model: james-burton/vet_19c
 ds_name: james-burton/vet_month_1c_ordinal
 text_model_base: bert-base-uncased
 model_type: ensemble_75
+ord_ds_name: james-burton/vet_month_1c_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_19c_stack
+my_text_model: james-burton/vet_19c
+ds_name: james-burton/vet_month_1c_ordinal
+text_model_base: bert-base-uncased
+model_type: stack
 ord_ds_name: james-burton/vet_month_1c_ordinal
 text_cols:
   - breed
