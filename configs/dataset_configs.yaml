@@ -87,6 +87,13 @@ text_model_base: bert-base-uncased
 model_type: all_text
 ord_ds_name: james-burton/vet_month_1b_ordinal
 ---
+config: vet_19b_stack
+my_text_model: james-burton/vet_19b
+ds_name: james-burton/vet_month_1b_ordinal
+text_model_base: bert-base-uncased
+model_type: stack
+ord_ds_name: james-burton/vet_month_1b_ordinal
+---
 config: vet_19b_ensemble_50
 my_text_model: james-burton/vet_59b
 ds_name: james-burton/vet_month_1b_ordinal
@@ -198,11 +205,11 @@ text_cols:
   - region
   - record
 ---
-config: vet_19c_ensemble_10
+config: vet_19c_ensemble_50
 my_text_model: james-burton/vet_19c
 ds_name: james-burton/vet_month_1c_ordinal
 text_model_base: bert-base-uncased
-model_type: ensemble_10
+model_type: ensemble_50
 ord_ds_name: james-burton/vet_month_1c_ordinal
 text_cols:
   - breed
