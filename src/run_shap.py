@@ -35,7 +35,7 @@ def run_shap(
 ):
     # Shap args
     args = ConfigLoader(
-        config_type, "../configs/shap_configs.yaml", "../configs/dataset_default.yaml"
+        config_type, "configs/shap_configs.yaml", "configs/dataset_default.yaml"
     )
     # Data
     all_text_versions = [
@@ -245,7 +245,7 @@ def run_all_text_baseline_shap(
 ):
     # Shap args
     args = ConfigLoader(
-        config_type, "../configs/shap_configs.yaml", "../configs/dataset_default.yaml"
+        config_type, "configs/shap_configs.yaml", "configs/dataset_default.yaml"
     )
     # Data
     test_df = load_dataset(
@@ -312,13 +312,14 @@ def load_shap_vals(config_name, add_parent_dir=False):
 def gen_summary_shap_vals(config_type, add_parent_dir=False):
     # Shap args
     args = ConfigLoader(
-        config_type, "../configs/shap_configs.yaml", "../configs/dataset_default.yaml"
+        config_type, "configs/shap_configs.yaml", "configs/dataset_default.yaml"
     )
     shap_vals = load_shap_vals(config_type, add_parent_dir=add_parent_dir)
     tokenizer = AutoTokenizer.from_pretrained(
         args.text_model_base, model_max_length=512
     )
-    filepath = f"models/shap_vals/summed_{config_type}.pkl"
+    # filepath = f"models/shap_vals/summed_{config_type}.pkl"
+    filepath = f"models/shap_vals/summed_{config_type}_test.pkl"
     print(
         f"""
             #################
@@ -438,7 +439,8 @@ def gen_summary_shap_vals(config_type, add_parent_dir=False):
 
 
 if __name__ == "__main__":
-    config_type = parser.parse_args().config
+    # config_type = parser.parse_args().config
+    config_type = "vet_50b_all_text"
     # if "baseline" in config_type:
     #     run_all_text_baseline_shap(config_type, test_set_size=1000)
 
