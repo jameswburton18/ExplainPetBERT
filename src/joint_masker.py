@@ -33,7 +33,7 @@ class JointMasker(Masker):
         mask_token=None,
         collapse_mask_token="auto",
         output_type="string",
-        tab_cluster_scale_factor=2,
+        tab_cluster_scale_factor=1,
         tab_partition_tree=None,
     ):
         # Boiler plate from Text masker
@@ -44,7 +44,7 @@ class JointMasker(Masker):
         else:
             try:
                 self.tokenizer = SimpleTokenizer(tokenizer)
-            except:  # noqa: E722
+            except:
                 raise Exception(  # pylint: disable=raise-missing-from
                     "The passed tokenizer cannot be wrapped as a masker because it does not have a __call__ "
                     + "method, not can it be interpreted as a splitting regexp!"
@@ -55,7 +55,7 @@ class JointMasker(Masker):
         self.input_mask_token = mask_token
         self.mask_token = mask_token  # could be recomputed later in this function
         self.mask_token_id = mask_token if isinstance(mask_token, int) else None
-        # This could be important
+        # Optional scaling
         self.tab_cluster_scale_factor = tab_cluster_scale_factor
 
         # Tab
@@ -303,7 +303,10 @@ class JointMasker(Masker):
                     We differentiate these because the first column we need to get 
                     rid of the end of sentence token, the last column we need to get 
                     rid of the start of sentence token and the middle columns we need
-                    to get rid of both
+                    to get rid of both.
+                    
+                    We also need to make allowances for when the tokenizer doesn't have
+                    a start or end of sentence token.
                     """
                     # First col
                     if col_idx == 0:
@@ -641,9 +644,6 @@ def merge_score(group1, group2, special_tokens):
     score -= len(group1) + len(group2)
     # print(group1, group2, score)
     return score
-
-
-# def rearrange_groups(pt_join, n_leaves, g_cs):
 
 
 def join_dendograms(pts):
