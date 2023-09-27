@@ -33,46 +33,68 @@ def run_shap(
     max_samples=100,
     test_set_size=100,
 ):
-    di = ConfigLoader(
-        config_type, "configs/dataset_configs.yaml", "configs/dataset_default.yaml"
+    # Shap args
+    args = ConfigLoader(
+        config_type, "../configs/shap_configs.yaml", "../configs/dataset_default.yaml"
     )
     # Data
+    all_text_versions = [
+        "all_text",
+        "all_as_text",
+        "all_as_text_base_reorder",
+        "all_as_text_tnt_reorder",
+    ]
+    ds_name = args.ds_name
     train_df = load_dataset(
-        di.ds_name,
+        ds_name,
         split="train",  # download_mode="force_redownload"
     ).to_pandas()
-    y_train = train_df[di.label_col]
+    y_train = train_df[args.label_col]
 
     test_df = load_dataset(
-        di.ds_name,
+        ds_name,
         split="test",  # download_mode="force_redownload"
     ).to_pandas()
     test_df = test_df.sample(test_set_size, random_state=55)
 
     # Models
-    tokenizer = AutoTokenizer.from_pretrained(di.text_model_base, model_max_length=512)
-    if di.model_type in [
-        "all_text",
-    ]:
+    tokenizer = AutoTokenizer.from_pretrained(
+        args.text_model_base, model_max_length=512
+    )
+    if args.model_type in all_text_versions:
         text_pipeline = pipeline(
             "text-classification",
-            model=di.my_text_model,
+            model=args.my_text_model,
             tokenizer=tokenizer,
             device="cuda:0",
             truncation=True,
             padding=True,
             top_k=None,
         )
-
-        def cols_to_str_fn(array):
-            return " | ".join(
+        # Define how to convert all columns to a single string
+        if args.model_type in ["all_as_text", "all_text"]:
+            cols_to_str_fn = lambda array: " | ".join(
                 [
                     f"{col}: {val}"
                     for col, val in zip(
-                        di.categorical_cols + di.numerical_cols + di.text_cols,
+                        args.categorical_cols + args.numerical_cols + args.text_cols,
                         array,
                     )
                 ]
+            )
+        else:
+            # # Reorder based on the new index order in di
+            # cols_to_str_fn = lambda array: " | ".join(
+            #     [
+            #         f"{col}: {val}"
+            #         for _, col, val in sorted(
+            #             zip(args.new_idx_order, args.tab_cols + args.text_cols, array)
+            #         )
+            #     ]
+            # )
+            raise NotImplementedError(
+                "Shouldn't need much as the column ordering is in dataset info,\
+                just need to update the cols_to_str_fn"
             )
 
         model = AllAsTextModel(
@@ -82,7 +104,7 @@ def run_shap(
     else:
         text_pipeline = pipeline(
             "text-classification",
-            model=di.my_text_model,
+            model=args.my_text_model,
             tokenizer=tokenizer,
             device="cuda:0",
             truncation=True,
@@ -90,7 +112,7 @@ def run_shap(
             top_k=None,
         )
         # Define how to convert the text columns to a single string
-        if len(di.text_cols) == 1:
+        if len(args.text_cols) == 1:
 
             def cols_to_str_fn(array):
                 return array[0]
@@ -99,52 +121,59 @@ def run_shap(
 
             def cols_to_str_fn(array):
                 return " | ".join(
-                    [f"{col}: {val}" for col, val in zip(di.text_cols, array)]
+                    [f"{col}: {val}" for col, val in zip(args.text_cols, array)]
                 )
 
         # LightGBM requires explicitly marking categorical features
-        train_df[di.categorical_cols] = train_df[di.categorical_cols].astype("category")
-        test_df[di.categorical_cols] = test_df[di.categorical_cols].astype("category")
+        train_df[args.categorical_cols] = train_df[args.categorical_cols].astype(
+            "category"
+        )
+        test_df[args.categorical_cols] = test_df[args.categorical_cols].astype(
+            "category"
+        )
 
         tab_model = lgb.LGBMClassifier(random_state=42, max_depth=3)
-        tab_model.fit(train_df[di.categorical_cols + di.numerical_cols], y_train)
+        tab_model.fit(train_df[args.categorical_cols + args.numerical_cols], y_train)
 
-        if di.model_type in ["ensemble_25", "ensemble_50", "ensemble_75"]:
-            text_weight = float(di.model_type.split("_")[-1]) / 100
+        if args.model_type in ["ensemble_25", "ensemble_50", "ensemble_75"]:
+            text_weight = float(args.model_type.split("_")[-1]) / 100
             model = WeightedEnsemble(
                 tab_model=tab_model,
                 text_pipeline=text_pipeline,
                 text_weight=text_weight,
                 cols_to_str_fn=cols_to_str_fn,
             )
-
-        elif di.model_type == "stack":
+        elif args.model_type == "stack":
             """
-            For the stack model, we make predictions on the validation set. These
-            predictions are then used as features for the stack model (another LightGBM
-            model) along with the other tabular features. In doing so the stack model
-            learns, depending on the tabular features, when to trust the tabular model
-            and when to trust the text model.
+            For the stack model, we make predictions on the validation set. These predictions
+            are then used as features for the stack model (another LightGBM model) along with
+            the other tabular features. In doing so the stack model learns, depending on the
+            tabular features, when to trust the tabular model and when to trust the text model.
             """
             val_df = load_dataset(
-                di.ds_name,
+                ds_name,
                 split="validation",  # download_mode="force_redownload"
             ).to_pandas()
-            val_df[di.categorical_cols] = val_df[di.categorical_cols].astype("category")
-            y_val = val_df[di.label_col]
-            val_text = list(map(cols_to_str_fn, val_df[di.text_cols].values))
+            val_df[args.categorical_cols] = val_df[args.categorical_cols].astype(
+                "category"
+            )
+            y_val = val_df[args.label_col]
+            val_text = list(map(cols_to_str_fn, val_df[args.text_cols].values))
 
-            # Training set is the preditions from the tabular and text models on the
-            # validation set plus the tabular features from the validation set
+            # Training set is the preditions from the tabular and text models on the validation set
+            # plus the tabular features from the validation set
             text_val_preds = text_pipeline(val_text)
             text_val_preds = np.array(
                 [format_text_pred(pred) for pred in text_val_preds]
             )
+            # text_val_preds = np.array(
+            #     [[lab["score"] for lab in pred] for pred in text_val_preds]
+            # )
 
             # add text and tabular predictions to the val_df
-            stack_val_df = val_df[di.categorical_cols + di.numerical_cols]
+            stack_val_df = val_df[args.categorical_cols + args.numerical_cols]
             tab_val_preds = tab_model.predict_proba(
-                val_df[di.categorical_cols + di.numerical_cols]
+                val_df[args.categorical_cols + args.numerical_cols]
             )
             stack_val_df[f"text_pred"] = text_val_preds[:, 1]
             stack_val_df[f"tab_pred"] = tab_val_preds[:, 1]
@@ -159,24 +188,25 @@ def run_shap(
                 text_pipeline=text_pipeline,
                 stack_model=stack_model,
                 cols_to_str_fn=cols_to_str_fn,
-                all_labels=False,
             )
         else:
-            raise ValueError(f"Invalid model type of {di.model_type}")
+            raise ValueError(f"Invalid model type of {args.model_type}")
 
     np.random.seed(1)
-    x = test_df[di.categorical_cols + di.numerical_cols + di.text_cols].values
+    x = test_df[args.categorical_cols + args.numerical_cols + args.text_cols].values
 
     # We need to load the ordinal dataset so that we can calculate the correlations for
     # the masker
-    ord_train_df = load_dataset(di.ord_ds_name, split="train").to_pandas()
+    ord_train_df = load_dataset(args.ord_ds_name, split="train").to_pandas()
 
     # Clustering only valid if there is more than one column
-    if len(di.categorical_cols + di.numerical_cols) > 1:
+    if len(args.categorical_cols + args.numerical_cols) > 1:
         tab_pt = sp.cluster.hierarchy.complete(
             sp.spatial.distance.pdist(
-                ord_train_df[di.categorical_cols + di.numerical_cols]
-                .fillna(ord_train_df[di.categorical_cols + di.numerical_cols].median())
+                ord_train_df[args.categorical_cols + args.numerical_cols]
+                .fillna(
+                    ord_train_df[args.categorical_cols + args.numerical_cols].median()
+                )
                 .values.T,
                 metric="correlation",
             )
@@ -185,14 +215,13 @@ def run_shap(
         tab_pt = None
 
     masker = JointMasker(
-        tab_df=train_df[di.categorical_cols + di.numerical_cols],
-        text_cols=di.text_cols,
+        tab_df=train_df[args.categorical_cols + args.numerical_cols],
+        text_cols=args.text_cols,
         cols_to_str_fn=cols_to_str_fn,
         tokenizer=tokenizer,
         collapse_mask_token=True,
         max_samples=max_samples,
         tab_partition_tree=tab_pt,
-        tab_cluster_scale_factor=1,
     )
 
     explainer = shap.explainers.Partition(model=model.predict, masker=masker)
@@ -214,20 +243,23 @@ def run_all_text_baseline_shap(
     config_type,
     test_set_size=100,
 ):
-    di = ConfigLoader(
-        config_type, "configs/dataset_configs.yaml", "configs/dataset_default.yaml"
+    # Shap args
+    args = ConfigLoader(
+        config_type, "../configs/shap_configs.yaml", "../configs/dataset_default.yaml"
     )
     # Data
     test_df = load_dataset(
-        di.ds_name, split="test", download_mode="force_redownload"
+        args.ds_name, split="test", download_mode="force_redownload"
     ).to_pandas()
     test_df = test_df.sample(test_set_size, random_state=55)
 
     # Models
-    tokenizer = AutoTokenizer.from_pretrained(di.text_model_base, model_max_length=512)
+    tokenizer = AutoTokenizer.from_pretrained(
+        args.text_model_base, model_max_length=512
+    )
     text_pipeline = pipeline(
         "text-classification",
-        model=di.my_text_model,
+        model=args.my_text_model,
         tokenizer=tokenizer,
         device="cuda:0",
         truncation=True,
@@ -241,7 +273,7 @@ def run_all_text_baseline_shap(
             [
                 f"{col}: {val}"
                 for col, val in zip(
-                    di.categorical_cols + di.numerical_cols + di.text_cols, array
+                    args.categorical_cols + args.numerical_cols + args.text_cols, array
                 )
             ]
         )
@@ -250,7 +282,9 @@ def run_all_text_baseline_shap(
     x = list(
         map(
             cols_to_str_fn,
-            test_df[di.categorical_cols + di.numerical_cols + di.text_cols].values,
+            test_df[
+                args.categorical_cols + args.numerical_cols + args.text_cols
+            ].values,
         )
     )
     explainer = shap.Explainer(text_pipeline, tokenizer)
@@ -276,11 +310,14 @@ def load_shap_vals(config_name, add_parent_dir=False):
 
 
 def gen_summary_shap_vals(config_type, add_parent_dir=False):
-    di = ConfigLoader(
-        config_type, "configs/dataset_configs.yaml", "configs/dataset_default.yaml"
+    # Shap args
+    args = ConfigLoader(
+        config_type, "../configs/shap_configs.yaml", "../configs/dataset_default.yaml"
     )
     shap_vals = load_shap_vals(config_type, add_parent_dir=add_parent_dir)
-    tokenizer = AutoTokenizer.from_pretrained(di.text_model_base, model_max_length=512)
+    tokenizer = AutoTokenizer.from_pretrained(
+        args.text_model_base, model_max_length=512
+    )
     filepath = f"models/shap_vals/summed_{config_type}.pkl"
     print(
         f"""
@@ -291,19 +328,20 @@ def gen_summary_shap_vals(config_type, add_parent_dir=False):
     )
     if "baseline" not in config_type:
         grouped_shap_vals = []
-        for label in range(len(di.label_names)):
+        for label in range(len(args.label_names)):
             shap_for_label = []
             for idx in tqdm(range(len(shap_vals))):
                 sv = shap_vals[idx, :, label]
                 text_ft_ends = text_ft_index_ends(
-                    sv.data[len(di.categorical_cols + di.numerical_cols) :], tokenizer
+                    sv.data[len(args.categorical_cols + args.numerical_cols) :],
+                    tokenizer,
                 )
-                text_ft_ends = [len(di.categorical_cols + di.numerical_cols)] + [
-                    x + len(di.categorical_cols + di.numerical_cols) + 1
+                text_ft_ends = [len(args.categorical_cols + args.numerical_cols)] + [
+                    x + len(args.categorical_cols + args.numerical_cols) + 1
                     for x in text_ft_ends
                 ]
                 val = np.append(
-                    sv.values[: len(di.categorical_cols + di.numerical_cols)],
+                    sv.values[: len(args.categorical_cols + args.numerical_cols)],
                     [
                         np.sum(sv.values[text_ft_ends[i] : text_ft_ends[i + 1]])
                         for i in range(len(text_ft_ends) - 1)
@@ -323,7 +361,7 @@ def gen_summary_shap_vals(config_type, add_parent_dir=False):
         grouped_shap_vals = []
         grouped_col_name_shap_vals = []
         grouped_colon_shap_vals = []
-        for label in range(len(di.label_names)):
+        for label in range(len(args.label_names)):
             shap_for_label = []
             shap_for_col_name = []
             shap_for_colon = []
@@ -338,7 +376,8 @@ def gen_summary_shap_vals(config_type, add_parent_dir=False):
                 # mapping, but works for now
                 if (
                     len(text_ft_ends)
-                    != len(di.text_cols + di.categorical_cols + di.numerical_cols) + 1
+                    != len(args.text_cols + args.categorical_cols + args.numerical_cols)
+                    + 1
                 ):
                     text_ft_ends = (
                         [1]
@@ -348,19 +387,20 @@ def gen_summary_shap_vals(config_type, add_parent_dir=False):
                             if sv.data[i + 1].strip()
                             in [
                                 token_segments(col, tokenizer)[0][1].strip()
-                                for col in di.categorical_cols
-                                + di.numerical_cols
-                                + di.text_cols
+                                for col in args.categorical_cols
+                                + args.numerical_cols
+                                + args.text_cols
                             ]
-                            + di.categorical_cols
-                            + di.numerical_cols
-                            + di.text_cols
+                            + args.categorical_cols
+                            + args.numerical_cols
+                            + args.text_cols
                         ]
                         + [len(sv.data) + 1]
                     )
                 assert (
                     len(text_ft_ends)
-                    == len(di.text_cols + di.categorical_cols + di.numerical_cols) + 1
+                    == len(args.text_cols + args.categorical_cols + args.numerical_cols)
+                    + 1
                 )
                 val = np.array(
                     [
@@ -399,9 +439,9 @@ def gen_summary_shap_vals(config_type, add_parent_dir=False):
 
 if __name__ == "__main__":
     config_type = parser.parse_args().config
-    if "baseline" in config_type:
-        run_all_text_baseline_shap(config_type, test_set_size=1000)
+    # if "baseline" in config_type:
+    #     run_all_text_baseline_shap(config_type, test_set_size=1000)
 
-    else:
-        run_shap(config_type)
+    # else:
+    #     run_shap(config_type, test_set_size=1000)
     gen_summary_shap_vals(config_type)
