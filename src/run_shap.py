@@ -333,13 +333,13 @@ def gen_summary_shap_vals(config_type, add_parent_dir=False):
             shap_for_label = []
             for idx in tqdm(range(len(shap_vals))):
                 sv = shap_vals[idx, :, label]
-                text_ft_ends = text_ft_index_ends(
+                text_ft_ends1 = text_ft_index_ends(
                     sv.data[len(args.categorical_cols + args.numerical_cols) :],
                     tokenizer,
                 )
                 text_ft_ends = [len(args.categorical_cols + args.numerical_cols)] + [
                     x + len(args.categorical_cols + args.numerical_cols) + 1
-                    for x in text_ft_ends
+                    for x in text_ft_ends1
                 ]
                 val = np.append(
                     sv.values[: len(args.categorical_cols + args.numerical_cols)],
@@ -439,11 +439,11 @@ def gen_summary_shap_vals(config_type, add_parent_dir=False):
 
 
 if __name__ == "__main__":
-    # config_type = parser.parse_args().config
-    config_type = "vet_50b_all_text"
-    # if "baseline" in config_type:
-    #     run_all_text_baseline_shap(config_type, test_set_size=1000)
+    config_type = parser.parse_args().config
+    # config_type = "vet_50c_all_text"
+    if "baseline" in config_type:
+        run_all_text_baseline_shap(config_type, test_set_size=1000)
 
-    # else:
-    #     run_shap(config_type, test_set_size=1000)
+    else:
+        run_shap(config_type, test_set_size=1000)
     gen_summary_shap_vals(config_type)
