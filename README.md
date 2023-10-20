@@ -28,3 +28,7 @@ pip install -r requirements.txt
 * [x] vet_50a F1 0.74058 fragrant-universe-45
 * [x] vet_58a F1 0.7304 sandy-bird-47
 * [x] vet_59a F1 0.72609 lucky-energy-45
+
+## Ragged array error
+
+This is a shap problem <https://github.com/shap/shap/issues/3063> and is fixed by installing numpy < 1.24
