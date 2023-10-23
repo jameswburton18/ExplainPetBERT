@@ -23,7 +23,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--config",
     type=str,
-    default="vet_50b_all_text",
+    default="vet_10c_2_all_text",
     help="Name of config from the the multi_config.yaml file",
 )
 
@@ -318,8 +318,8 @@ def gen_summary_shap_vals(config_type, add_parent_dir=False):
     tokenizer = AutoTokenizer.from_pretrained(
         args.text_model_base, model_max_length=512
     )
-    # filepath = f"models/shap_vals/summed_{config_type}.pkl"
-    filepath = f"models/shap_vals/summed_{config_type}_test.pkl"
+    filepath = f"models/shap_vals/summed_{config_type}.pkl"
+    # filepath = f"models/shap_vals/summed_{config_type}_test.pkl"
     print(
         f"""
             #################
