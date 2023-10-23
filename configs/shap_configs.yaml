@@ -194,6 +194,17 @@ text_cols:
   - region
   - record
 ---
+config: vet_10c_2_all_text
+my_text_model: james-burton/vet_10c_2
+ds_name: james-burton/vet_month_1c_all_text
+text_model_base: bert-base-uncased
+model_type: all_text
+ord_ds_name: james-burton/vet_month_1c_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
 config: vet_10c_baseline
 my_text_model: james-burton/vet_10c
 ds_name: james-burton/vet_month_1c_all_text

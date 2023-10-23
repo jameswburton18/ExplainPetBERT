@@ -15,11 +15,15 @@
 config: testing
 fast_dev_run: true
 batch_size: 32
-ds_name: james-burton/vet_month_1b_all_text
+ds_name: james-burton/vet_month_1c_all_text
 version: all_text
-model_base: SAVSNET/PetBERT_pretrained
+# model_base: SAVSNET/PetBERT_pretrained
 warmup_steps: 500
 weight_decay: 0.01
+text_cols:
+  - breed
+  - region
+  - record
 
 ---
 config: vet_19
@@ -219,6 +223,10 @@ version: all_text
 model_base: SAVSNET/PetBERT_pretrained
 warmup_steps: 500
 weight_decay: 0.01
+text_cols:
+  - breed
+  - region
+  - record
 ---
 config: vet_58c
 fast_dev_run: false
@@ -228,6 +236,10 @@ version: record_only
 model_base: SAVSNET/PetBERT_pretrained
 warmup_steps: 500
 weight_decay: 0.01
+text_cols:
+  - breed
+  - region
+  - record
 
 ---
 config: vet_59c
@@ -238,6 +250,10 @@ version: text_col_only
 model_base: SAVSNET/PetBERT_pretrained
 warmup_steps: 500
 weight_decay: 0.01
+text_cols:
+  - breed
+  - region
+  - record
 
 ---
 config: vet_19c
@@ -247,6 +263,10 @@ ds_name: james-burton/vet_month_1c_ordinal
 version: text_col_only
 warmup_steps: 500
 weight_decay: 0.01
+text_cols:
+  - breed
+  - region
+  - record
 
 ---
 config: vet_10c
@@ -256,6 +276,10 @@ ds_name: james-burton/vet_month_1c_all_text
 version: all_text
 warmup_steps: 500
 weight_decay: 0.01
+text_cols:
+  - breed
+  - region
+  - record
 
 ---
 config: vet_10c_2
@@ -265,6 +289,10 @@ ds_name: james-burton/vet_month_1c_all_text
 version: all_text
 warmup_steps: 500
 weight_decay: 0.01
+text_cols:
+  - breed
+  - region
+  - record
 
 ---
 config: vet_18c
@@ -274,3 +302,57 @@ ds_name: james-burton/vet_month_1c_all_text
 version: record_only
 warmup_steps: 500
 weight_decay: 0.01
+
+--- #for ds i've made it not just old ages
+config: vet_50d
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1d_all_text
+version: all_text
+model_base: SAVSNET/PetBERT_pretrained
+warmup_steps: 500
+weight_decay: 0.01
+text_cols:
+  - breed
+  - region
+  - record
+
+---
+config: vet_59d
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1d_all_text
+version: text_col_only
+model_base: SAVSNET/PetBERT_pretrained
+warmup_steps: 500
+weight_decay: 0.01
+text_cols:
+  - breed
+  - region
+  - record
+
+---
+config: vet_19d
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1d_ordinal
+version: text_col_only
+warmup_steps: 500
+weight_decay: 0.01
+text_cols:
+  - breed
+  - region
+  - record
+
+---
+config: vet_10d
+fast_dev_run: false
+batch_size: 32
+ds_name: james-burton/vet_month_1d_all_text
+version: all_text
+warmup_steps: 500
+weight_decay: 0.01
+text_cols:
+  - breed
+  - region
+  - record
