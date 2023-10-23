@@ -259,3 +259,148 @@ text_cols:
   - breed
   - region
   - record
+
+### For d, made it the whole dataset not just old
+---
+config: vet_59d_stack
+my_text_model: james-burton/vet_59d
+ds_name: james-burton/vet_month_1d_ordinal
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: stack
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_50d_all_text
+my_text_model: james-burton/vet_50d
+ds_name: james-burton/vet_month_1d_all_text
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: all_text
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_50d_baseline
+my_text_model: james-burton/vet_50d
+ds_name: james-burton/vet_month_1d_all_text
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: all_text
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_59d_ensemble_50
+my_text_model: james-burton/vet_59d
+ds_name: james-burton/vet_month_1d_ordinal
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: ensemble_50
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_59d_ensemble_25
+my_text_model: james-burton/vet_59d
+ds_name: james-burton/vet_month_1d_ordinal
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: ensemble_25
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_59d_ensemble_75
+my_text_model: james-burton/vet_59d
+ds_name: james-burton/vet_month_1d_ordinal
+text_model_base: SAVSNET/PetBERT_pretrained
+model_type: ensemble_75
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_10d_all_text
+my_text_model: james-burton/vet_10d
+ds_name: james-burton/vet_month_1d_all_text
+text_model_base: bert-base-uncased
+model_type: all_text
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_10d_2_all_text
+my_text_model: james-burton/vet_10d_2
+ds_name: james-burton/vet_month_1d_all_text
+text_model_base: bert-base-uncased
+model_type: all_text
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_10d_baseline
+my_text_model: james-burton/vet_10d
+ds_name: james-burton/vet_month_1d_all_text
+text_model_base: bert-base-uncased
+model_type: all_text
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_19d_ensemble_50
+my_text_model: james-burton/vet_19d
+ds_name: james-burton/vet_month_1d_ordinal
+text_model_base: bert-base-uncased
+model_type: ensemble_50
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_19d_ensemble_25
+my_text_model: james-burton/vet_19d
+ds_name: james-burton/vet_month_1d_ordinal
+text_model_base: bert-base-uncased
+model_type: ensemble_25
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_19d_ensemble_75
+my_text_model: james-burton/vet_19d
+ds_name: james-burton/vet_month_1d_ordinal
+text_model_base: bert-base-uncased
+model_type: ensemble_75
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
+---
+config: vet_19d_stack
+my_text_model: james-burton/vet_19d
+ds_name: james-burton/vet_month_1d_ordinal
+text_model_base: bert-base-uncased
+model_type: stack
+ord_ds_name: james-burton/vet_month_1d_ordinal
+text_cols:
+  - breed
+  - region
+  - record
