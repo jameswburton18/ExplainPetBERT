@@ -188,6 +188,7 @@ def run_shap(
                 text_pipeline=text_pipeline,
                 stack_model=stack_model,
                 cols_to_str_fn=cols_to_str_fn,
+                all_labels=False,
             )
         else:
             raise ValueError(f"Invalid model type of {args.model_type}")
